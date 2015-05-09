@@ -5,8 +5,14 @@ Rotten Tomatoes API:  http://developer.rottentomatoes.com/
 
 Main file for interacting with the Rotten Tomatoes API.
 """
+import sys
+PY2 = sys.version_info[0] == 2
 
-from urllib import urlencode
+if PY2:
+    from urllib import urlencode
+else:
+    from urllib.parse import urlencode
+
 import zlib
 import os
 

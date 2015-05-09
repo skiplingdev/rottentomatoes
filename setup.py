@@ -25,5 +25,5 @@ setup(name="rottentomatoes",
                    'Topic :: Internet',
                    'Topic :: Internet :: WWW/HTTP',
                   ],
-      test_suite="test.py",
+      test_suite="test",
       tests_require=["mock", "Mock"])

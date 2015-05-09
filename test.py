@@ -2,13 +2,21 @@
 
 """Unit tests for the `rottentomatoes.py` file."""
 
+import sys
 import unittest
-try:
-    from urlparse import urlparse, parse_qs
-except ImportError:  # pragma: no cover
-    # For older versions of Python.
-    from urlparse import urlparse
-    from cgi import parse_qs
+
+PY2 = sys.version_info[0] == 2
+
+if PY2:
+    try:
+        from urlparse import urlparse, parse_qs
+    except ImportError:  # pragma: no cover
+        # For older versions of Python.
+        from urlparse import urlparse
+        from cgi import parse_qs
+else:
+    from urllib.parse import urlparse, parse_qs
+
 from mock import Mock
 from rottentomatoes import rottentomatoes
 from rottentomatoes import RT
@@ -67,27 +75,27 @@ class SearchMethodTest(unittest.TestCase):
     def test_empty_search_url_keys(self):
         RT().search('')
         movie = call_args()
-        self.assertEqual(movie.keys(), ['apikey'])
+        self.assertEqual(list(movie.keys()), ['apikey'])
 
     def test_nonempty_search_url_keys(self):
         RT().search('some movie')
         movie = call_args()
-        self.assertEqual(movie.keys(), ['q', 'apikey'])
+        self.assertEqual(sorted(movie.keys()), ['apikey', 'q'])
 
     def test_search_url_keys_with_page_arg(self):
         RT().search('some movie', page=2)
         movie = call_args()
-        self.assertEqual(movie.keys(), ['q', 'apikey', 'page'])
+        self.assertEqual(sorted(movie.keys()), ['apikey', 'page', 'q'])
 
     def test_search_url_keys_with_page_limit_arg(self):
         RT().search('some movie', page_limit=5)
         movie = call_args()
-        self.assertEqual(movie.keys(), ['q', 'apikey', 'page_limit'])
+        self.assertEqual(sorted(movie.keys()), ['apikey', 'page_limit', 'q'])
 
     def test_search_url_keys_with_multiple_kwargs(self):
         RT().search('some movie', page=2, page_limit=5)
         movie = call_args()
-        self.assertEqual(movie.keys(), ['q', 'apikey', 'page', 'page_limit'])
+        self.assertEqual(sorted(movie.keys()), ['apikey', 'page', 'page_limit', 'q'])
 
     def test_search_url_keys_for_lion_king(self):
         RT().search('the lion king')
