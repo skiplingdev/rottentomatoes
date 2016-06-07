@@ -75,7 +75,7 @@ class RT(object):
         # if there's an error, it's probably not gzip'd
         pass
 
-      return json.loads(response)
+      return json.loads(response.decode('utf8'))
 
     def search(self, query, datatype='movies', **kwargs):
         """
